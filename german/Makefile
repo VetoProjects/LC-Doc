@@ -1,10 +1,12 @@
 all: doc
 
 doc:
-	latex compile.tex
-	latex compile.tex
-	latex compile.tex
-	dvips compile.dvi
-	ps2pdf compile.ps
+	pdflatex -shell-escape compile.tex 2&> /dev/null
+	bibtex compile.aux > /dev/null
+	pdflatex -shell-escape compile.tex 2&> /dev/null
+	pdflatex -shell-escape compile.tex 2&> /dev/null
 	mv compile.pdf Dokumentation.pdf
-	rm compile.toc compile.dvi compile.log compile.ps compile.out *.aux
+	make clean
+
+make clean:
+	rm compile-* compile.b* compile.aux compile.log compile.out compile.toc

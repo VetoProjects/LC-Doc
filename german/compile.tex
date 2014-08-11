@@ -1,11 +1,13 @@
 \documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[ngerman]{babel}
+\usepackage{auto-pst-pdf}
 \usepackage{pst-node}
-\usepackage{pstricks}
 \usepackage{marvosym}
 \usepackage{epigraph}
 \usepackage{hyperref}
+\usepackage{filecontents}
+\usepackage[numbers,round]{natbib}
 \DeclareInputText{128}{\EUR}
 
 \newcommand{\sq}[1]{\ensuremath{\mathsf{#1}}}
@@ -28,5 +30,7 @@
 
 \input{./title.tex}
 \input{./doctext.tex}
+\bibliographystyle{alphadin}
+\bibliography{literature}
 
 \end{document}
