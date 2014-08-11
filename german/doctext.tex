@@ -1,0 +1,169 @@
+\tableofcontents
+\newpage
+\section{Einleitung}
+\epigraph{If debugging is the process of removing software bugs, then programming must be the process of putting them in.}{Edsger W. Dijkstra}
+\paragraph{}
+    Im Folgenden wird eine Live-Coding-Applikation vorgestellt, die im Rahmen einer an der Hochschule für Technik und Wirtschaft
+	Berlin angebotenen Lehrveranstaltung des Bachelorstudiengangs Angewandte Informatik, Vertiefung Multimedia, entwickelt wurde.
+	Das Projektziel war frei wählbar, die Anforderung war jedoch, dass es sich um eine Multimediaanwendung handelt, die Gebrauch von
+	der Programmbibliothek QT\footnote{http://qt-project.org/} macht und in C++, der ursprünglichen und nativen Sprache von QT, 
+	geschrieben ist\footnote{Obwohl es inzwischen verschiedenste Wrapper und Erweiterungen gibt. Siehe \ref{sec:QT} auf 
+	Seite \pageref{sec:QT}}.
+\paragraph{}
+	Die Autoren entschieden sich für eine Live-Coding-Applikation\footnote{Für eine Definition des Begriffs wird auf \ref{sec:LiveCoding}
+	auf Seite \pageref{sec:LiveCoding} verwiesen}, da diese eine breite Einführung in die Möglichkeiten von QT bietet und es momentan
+	nach ihrem Wissenstand keine anderen adäquaten Tools für dieses Subset des Programmierens gibt. Ausserdem besteht bei den Autoren
+	ein grosses Interesse an Metaprogrammierung und dem Mechanismus der Quelltextübersetzung sowie für die Sache des Live Coding.
+	Somit schufen sie sich auch ein Werkzeug für ihre eigenen Zwecke, das jedoch auch zum freien Download auf Github
+	angeboten wird. An dieser Stelle besteht mit einiger Wahrscheinlichkeit bereits ein Bedarf nach Definition, dem in \ref{sec:LiveCoding}
+	und \ref{sec:QT} nachgegangen wird.
+\paragraph{}
+    \textit{Eine aktuelle Version des Werkzeuges kann zu jedem Zeitpunkt von der Seite }\url{https://github.com/hellerve/VetoLC}\textit{ abgerufen werden.
+    Ebenso kann die aktuellste Version dieser Dokumentation von der Webseite}\linebreak
+    \url{https://github.com/hellerve/LiveCoding-Documentation}\textit{ oder auf Anfrage von den Autoren bezogen werden.}
+\newpage
+\subsection{Gliederung der Arbeit}
+	Im Folgenden wird die Gliederung der Arbeit beschrieben; sie spiegelt den Entwicklungsprozess wider:
+\paragraph{Abschnitt \ref{sec:Def}}
+	beschäftigt sich mit den grundlegenden Begrifflichkeiten der vorliegenden Arbeit und gibt eine kurze, nicht umfassende Einführung in QT als
+	Bibliothek.\footnote{Eine solche Einführung könnte leicht eine eigene Arbeit füllen.}
+\paragraph{Abschnitt \ref{sec:Ziel}}
+	behandelt die Zielsetzung des Projektes. Sie behandelt die Planung sowie die implementationsunabhängigen Vorüberlegungen der Autoren.
+	Es wird ein Überblick über die Infrastruktur und ihr zugrundeliegende Design-Entscheidungen gegeben.
+\paragraph{Abschnitt \ref{sec:Imp}}
+	beschreibt die Implementation und geht auf technische Details ein. Der Entwicklungsprozess und die einzelnen Teile des Programms werden 
+	erläutert. Dies ist natürlich nicht in aller Tiefe möglich, jedoch ergänzt sich die vorliegende Arbeit hierin mit der Dokumentation des 
+    Programms.
+\paragraph{Abschnitt \ref{sec:WhatsNext}}
+	stellt Fragen, die nach der ersten Version der Entwicklungsumgebung offen bleiben, denn die Autoren planen, daran weiterzuarbeiten.
+\paragraph{Abschnitt \ref{sec:Schluss}}
+	versucht Schlussworte zu finden. Dies ist derjenige Teil der Arbeit, der den Autoren am schwersten von der Hand ging.
+\newpage
+\section{Definitionen} \label{sec:Def}
+	Im Folgenden werden einige für das Verständnis des weiteren Textes elementare Definitionen bereitgestellt.
+\subsection{Definition des Begriffes Live Coding} \label{sec:LiveCoding}
+	Live Coding ist eine neue und relativ interessante Disziplin der Informatik, die dem künstlerischen Potential der Programmierung von
+	Multimedia-Anwendungen noch die Kraft der Performance-Kunst, die Kraft des Moments, eröffnet. Durch entsprechende Werkzeuge soll das 
+	Schreiben von Anwendungen in Echtzeit zur Kunstform erhoben werden. Dejaying\footnote{hier: das Erstellen von audiomanipulativen Programmen 
+	in Echtzeit, seit kurzem bekannt als \textit{Algorave}.} ist genauso vom Begriff eingeschlossen wie Grafikprogrammierung, wobei diese vor allem von 
+	Programmen wie Processing\footnote{http://www.processing.org}, einer Entwicklungsumgebung für Java, dominiert wird. In der Klangprogrammierung
+	gibt es keine solch dominante Kraft, die verschiedensten Sprachen und Umgebungen werden benutzt, von Tidal\footnote{http://toplap.org/tidal/}, einer
+	in Haskell implementierten funktionalen Nischensprache, bis hin zu Super Collider\footnote{http://supercollider.sourceforge.net/}, einer mächtigen 
+    objektorientierten Sprache. Wir hoffen dass wir uns durch die Auswahl Pythons, einer objektorientierten Sprache, die jedoch auch viele funktionale
+    Elemente enthält(\texttt{map()}, \texttt{filter()}, \texttt{lambda}, Generatoren, Closures), ein möglichst gutes Fundament erwählt haben, um beide Ansätze 
+    zumindest zu emulieren.
+\paragraph{}
+	Durch die Erschaffung einer hinreichend komfortablen, mächtigen Entwicklungsumgebung mit einem breiten Spektrum an Möglichkeiten erhoffen sich 
+	die Autoren ein erhöhtes Interesse an der Sache des Live Coding sowie erhöhte Produktivität der kreativ involvierten Entwickler und Künstler; eine
+	solche Plattform sollte aus ihrem Verständnis heraus von Grund auf neu geschrieben werden, da die Umformung bestehender Umgebungen meist
+	ungewollte Kompromisse mit sich zieht, die das Projekt entweder stagnieren lassen oder in ein anderes, ungewolltes Produkt umwandeln würden.
+\newpage
+\subsection{Einführung in die Programmbibliothek QT} \label{sec:QT}
+\epigraph{More computing sins are committed in the name of efficiency (without necessarily achieving it) than for any other single reason – including blind stupidity.}
+{William A. Wulf}
+	QT(ausgesprochen \textit{kju:t}\footnote{Die Kriptik der IPA-Zeichen begeistert zumindest einen der Autoren zutiefst.}, wie das englische Wort 
+	\textit{cute}) ist eine im Jahr 1991 von zwei schwedischen Entwicklern konzipierte Programmbibliothek, die plattformübergreifende Programmierung 
+	von grafischen Oberflächen, Netzwerk- und Datenbankprogrammen und Spielen ermöglicht, sequentiell und nebenläufig. Sie basiert auf dem Verständnis 
+    von Ereignissen, Signalen und Slots sowie den Erweiterungen von C++, die durch einen zusätzlichen Präprozessor, den Meta Object Compiler(moc),
+	ermöglicht werden. 
+\paragraph{}
+	Klassen, die diese Funktionen nutzen wollen, müssen das Schlüsselwort \linebreak\texttt{Q\_OBJECT} einbinden und zusätzlich zu den 
+	\texttt{private} und \texttt{public}-Teilen der Klassendefinition noch \texttt{(private/public) slot} und \texttt{signal} definieren.
+\subsubsection{Ereignisse in QT}
+	Ereignisse werden in einer von einer Qt-Applikation(QApplication) begonnenen Ereignisschleife(Event Loop) verarbeitet. Passiert nichts, läuft die 
+	Schleife endlos weiter\footnote{Vereinfacht ausgedrückt könnte man von Busy Waiting sprechen, jedoch ist die interne Struktur der Event Loop sehr viel
+	komplexer, siehe \label{sec:evloop}}. Sie wird durch ein Schliessereignis(Close Event) unterbrochen. Auch das Erzeugen neuer asynchron 
+	laufender Schleifen ist möglich(Dazu müssen bestimmte Objekte - \texttt{QThread}, \texttt{QProcess}, \texttt{QThreadpool} etc. - erstellt und die 
+    laufenden Prozesse dorthin verschoben werden).
+\subsubsection{Die Ereignisschleife} \label{sec:evloop}
+	Wenn ein Programmierer die Ereignisschleife nach den Standardvorgaben startet, ruft er \texttt{QApplication::exec()} auf. Diese leitet ihn dann
+	durch zwei \texttt{exec()}-Definitionen der Basisklassen zu \texttt{QtCoreApplication}, die  testet, ob das Aufrufen der Schleife valide ist und dann eine
+	 Instanz der internen Klasse \texttt{QEventLoop} erstellt. Von dieser wiederum \texttt{exec()} aufgerufen\footnote{Zur Erinnerung: Dies ist die vierte
+	Klasse, die diese Methode implementiert!}. Diese Methode ruft \linebreak \texttt{processEvents()} auf, die dann wartet, bis etwas passiert. Also doch ein Fall von
+	Busy Waiting? Nein, die Methode bricht die Operation ab, wenn nach zu langer Zeit nichts passiert. Natürlich wird die Applikation dann nicht einfach abgebrochen,
+	sondern eine weitere Schleifenkondition inder Methode darüber getestet, doch schlägt diese fehl(ein internes atomares Flag namens exit, das zeigt, dass,
+	nun ja, ein Beenden des Programmes nötig wurde), bricht die Ereignisschleife ab. Der beinhaltende Thread  wird dann normalerweise beendet(außer man
+	überschreibt gewisse Methoden in QThread, aber außer den Autoren dieser Arbeit braucht das heutzutage niemand mehr).
+\subsubsection{Signale}
+	Signale sind auf Ereignissen basierende Nachrichten, die von Objekten an die Ereignisschleife gereicht werden und von dort an die entsprechenden Slots
+	versendet(durch Broadcasting an alle verbundenen Slots) werden.
+\subsubsection{Slots}
+	Slots sind Routinen, die an bestimmte Signale gebunden werden können und müssen, um auf sie zu reagieren. Der Absender muss zur 
+	Definitionszeit bekannt sein, das heisst, es ist nich möglich, einfach Signale von allen oder unbekannten Objekten entgegenzunehmen.
+\paragraph{}
+	Slots können als \texttt{private} oderm \texttt{public} deklariert sein und damit entweder interne oder externe Sichtbarkeit besitzen.
+\subsubsection{Der Meta Object Compiler(moc)}
+	Der Meta Object Compiler übersetzt den nicht-C++-konformen QT-Code in C++-Code, indem er alle Makros und die Definition von Signalen und Slots
+	durch C++-Code ersetzt. Dieser (heute unötig) komplexe Vorgang ist der Historie der Bibliothek geschuldet, da diese in einer Zeit entstand, in der
+	Kompilatoren die generische Programmierung durch Vorlagen(Templates) nicht gleich gut unterstützen. Dies wiederum stand in krassem Gegensatz
+	zum plattformunabhängigen Ansatz QTs.
+\newpage
+\section{Zielsetzung} \label{sec:Ziel}
+\epigraph{Walking on water and developing software from a specification are easy if both are frozen.}{Edward V Berard}
+	Eine Entwicklungsumgebung zu erschaffen, die den Ansprüchen einer Entwicklergemeinde gerecht wird, die auf hohe Verfügbarkeit und Robustheit bei 
+    gleichzeitiger Garantie der Evaluation in Echtzeit aufbaut, ist eine Aufgabe, der sich die Autoren nicht gewachsen fühlen. Kompensiert wird dies
+    durch die offene Lizensierung, die den Benutzer dazu aufruft, selbst an dem Programm zu arbeiten. Trotzdem sind, um den Grundstein einer solchen
+    Entwicklung zu legen, einige Vorüberlegungen nötig. Die Infrastruktur des Werkzeugs lässt sich im Nachhinein nur unter grossen Schwierigkeiten 
+    wieder ändern und meist schreibt ein engagierter Entwickler dann lieber ein neues, besseres Programm\footnote{So entstand zumindest die Idee der
+    Autorn zu ihrem Editor.}.
+\subsection{Allgemeine Infrastruktur}
+    War der erste Prototyp des Editors noch relativ monolithisch, wurde mit seiner Erweiterung und der Verbesserung der Funktionalität klar,
+    dass dies keine zukunftsträchtige oder elegante Lösung war. Dazu sei auch noch gesagt, dass die erste Skizze der Infrastruktur bereits modular
+    war, jedoch waren diese guten und wohlgeformten Ideen in der ersten Euphorie vergessen. Die letztendlich verwendete Infrastruktur sieht jener
+    Skizze doch wieder ähnlich; ein Beweis dafür, dass Ideen meist besser sind als ihre erste Umsetzung in die Tat dies vermuten lässt.
+\paragraph{}
+    Auf Abbildung \ref{figure:figureI} ist die grundlegende Infrastruktur des Programmes dargestellt. Alle dem Benutzer bekannten Instanzen sind weiss
+    hinterlegt, alle ihm nicht notwendigerweise erfassbaren grau. Der Kontrollfluss ist relativ klar: Der Benutzer interagiert nur mit dem Editor,
+    dieser mit den Einstellungen, um auf diese zu reagieren) und dem Backend, um Informationen über Eingaben des Benutzers weiterzugeben und auf Nachrichten
+    der geöffneten Kontexte und des Systems zu reagieren. Das Backend wiederum ist ebenfalls lesend mit den Einstellungen verbunden. An dieser Stelle muss
+    eine erste Anmerkung gemacht werden: die Instanz Einstellungen ist komplett ideell, d.h. es gibt \textit{keine} ihr entsprechende Implementation.
+\paragraph{}
+    Weiterhin ist das Backend mit dem den Code ausführendem Kontext verbunden. Diese sind nicht identisch, der Kontext ist eine asynchrone Instanz,
+    die nach Bedarf gestartet und gestoppt wird(d.h. ein Thread). Dies erlaubt zum einen die weitere Benutzung des Editors, auch wenn gerade ein Programm
+    ausgeführt wird und die Kapselung und Abstraktion. Die Steuerung des Kontextes erfolgt durch Signale durch das Backend.
+\paragraph{}
+    In der Realität ist die Infrastruktur sehr viel komplexer und verzweigter, doch die grundlegenden Komponenten sind diejenigen, die in Abbildung
+    \ref{figure:figureI} zu sehen sind; meist sind die eigentlich zusammenhängenden Ideen noch in Unterprobleme aufgespalten und gekapselt.
+\begin{figure}
+  \centering
+  \hspace{3cm}
+  \begin{psmatrix}[mnode=r,colsep=0.8,rowsep=0.5]
+    [name=IO-Device] \pw{IO-Device} & [name=User] \pw{User} \\[0pt]
+    [name=Renderer] \pw{Renderer} & [name=Execution Context] \ps{Execution Context} & [name=Backend]  \ps{Backend} & [name=Editor] \pw{Editor} & [name=Settings] \ps{Settings}
+    \ncline{->}{User}{Editor}
+    \ncline{->}{Editor}{Backend}
+    \ncline{->}{Backend}{Editor}
+    \ncline{->}{Editor}{Settings}
+    \ncline{->}{Backend}{Execution Context}
+    \ncline{->}{Execution Context}{IO-Device}
+    \ncline{->}{Execution Context}{Renderer}
+    \ncangle[angleA=-90,angleB=-90]{->}{Settings}{Backend}
+  \end{psmatrix}
+  \caption{Eine Übersicht über die Infrastruktur des Editors.}
+\end{figure}
+\label{figure:figureI}
+\subsection{Entscheidungen im Vorfeld und ihre Begründung}
+    Über Modularität und Kapselung lässt sich streiten, in vielen Fällen gab es durchaus zweierlei Wege, die Infrastruktur anzulegen, doch war eine Entscheidung
+    vonnöten. Trotzdem fühlen die Autoren sich verpflichtet, Auskunft über die Gedanken zu geben, die hinter dem Aufbau stecken.
+\paragraph{}
+    So stellt sich die Frage, ob die Einstellungen tatsächlich vom Backend zu trennen sind. In der Ansicht der Autoren sind sie das, da sie Anweisungen des Benutzers
+    sind, die zwar Anweisungen des Backends an den Editor entsprechen, jedoch nicht wirklich aus dem Arbeitsgang des Programmes stammen, sondern quasi in dieses injeziert
+    werden. Desweiteren ist eine so einfache Kapselung kostengünstig und für die Wartbarkeit von Debeutung. So wird dem aufmerksamen Leser des Quelltextes aufgefallen sein, 
+    dass neben dem Backend auch ein SettingsBackend existiert, das mit dem Backend in Verbindung steht. Dies ist eine sehr einfache, der Lesbarkeit jedoch zuträgliche
+    Trennung und nur einer von einigen Punkten, in dem der kleine Überblick der Realität nicht ganz getreu wird.
+\paragraph{}
+    Ebenso ist der ausführende Kontext(im Überblick englisch betitelt), eigentlich ein Teil des Backends, jedoch läuft dieser asynchron und unabhängig vom Backend und
+    steht mit diesem nur über \texttt{Signals} in Verbindung. Dies ist infrastrukturell geschickter, da es eine vom Hauptprogramm unabhängige Fehlerbehandlung im Kontext
+    ermöglicht und diesem zusätzlich mehr CPU-Zeit zur Verfügung stellen sollte.\footnote{Dies ist eine blosse Vermutung, ungetestet und höchstwahrscheinlich falsch.}
+\paragraph{}
+    Abschliessend möchten die Autoren noch zugeben, dass sämtliche Infrastruktur in einem Versuch-und-Fehler-Arbeitsprozess entstand; dies lässt sich leicht anhand der
+    Commit-Beschriftungen(und deren Inhalt) im Versionsrevisionswerkzeug(git) ablesen. Von einer Studie derselben raten die Verantwortlichen jedoch heftigst ab, da sich
+    ein Moloch der schlechtmöglichsten Praktiken abzeichnet(so wurde zum Beispiel über den ganzen Erarbeitungsprozess nur eine einzige Branch bearbeitet).
+\newpage
+\section{Implementation} \label{sec:Imp}
+	Die Beschreibung der Implementation ist nicht ganz einfach und es lohnt sich, die mithilfe Doxygen erstellte Klassendokumentation zu Rate zu ziehen. Glücklicher\-weise
+    sind sämtliche Komponenten jedoch mehr oder weniger aussagekräftig dokumentiert, sodass ein geneigter Leser sich schnell zurecht finden sollte.
+\section{Offene Fragen} \label{sec:WhatsNext}
+	Was bleibt noch zu tun
+\section{Schlussworte} \label{sec:Schluss}
+	\epigraph{Most good programmers do programming not because they expect to get paid or get adulation by the public, but because it is fun to program.”}{Linus Torvalds}

@@ -1,0 +1,32 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{pst-node}
+\usepackage{pstricks}
+\usepackage{marvosym}
+\usepackage{epigraph}
+\usepackage{hyperref}
+\DeclareInputText{128}{\EUR}
+
+\newcommand{\sq}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\mybox}[1]{\psshadowbox[linecolor=gray,shadowcolor=lightgray]{#1}}
+
+\newcommand{\pb}[1]{\mybox{\ensuremath{#1}}}
+
+\newcommand{\pw}[1]{\psframebox[linewidth=0.4pt]{\sq{#1}}}
+\newcommand{\ps}[1]{%
+\psframebox[linewidth=0.4pt,fillcolor=lightgray,fillstyle=solid]{\sq{#1}}}
+
+\newcommand{\rxy}[2]{%
+\makebox[0cm]{\raisebox{-1.6em}[0cm][0cm]{\hspace*{3mm}\sq{#2}}}%
+\mybox{\textsf{1\,round($\bar #1$)}}}
+
+\newcommand{\rxysmall}[2]{%
+\makebox[0cm]{\raisebox{-1.6em}[0cm][0cm]{\hspace*{-1.3cm}\sq{#2}}}%
+\makebox[2mm]{\mybox{\textsf{1\,round($\bar #1$)}}}}
+\begin{document}
+
+\input{./title.tex}
+\input{./doctext.tex}
+
+\end{document}
