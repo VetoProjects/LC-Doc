@@ -288,9 +288,16 @@
     hier bleibt nur noch der Renderer, der aufgeräumt und vielleicht auf mehrere Klassen aufgeteilt werden könnte. Dieser Unterschied in der Betriebsbereitschaft liegt
     wohl darin begründet, dass die Grafik auf OpenGL aufbaut, wohingegen die Audioprogrammierung von Grund auf neu geschrieben wurde.
 \paragraph{}
-    Im Moment sind folgende Fehler bekannt: Die Audio-Ausgabe funktioniert nicht, das Laden von Bildern vom Fragement Shader aus ist fehlerhaft, Audio-Eingabe beim Renderer
-    ist nur in Mono vorhanden, Syntax-Hervrohebung ist nur für GLSL verfügbar, das Laden von neuen Designs führt ohne das Schliessen des Einstellungsfensters zu Darstellungsproblemen
-    bei einigen Widgets..
+    Einige Dinge sind noch zu tun, sowohl für die vorgegabenen Anforderungen als auch für selbstgestellte. So sind im Moment folgende Fehler bekannt:
+\begin{enumerate}\itemsep0pt
+\item Die Audio-Ausgabe funktioniert bisher nur unter Windows. Grund ist ein insuffizienter Prozessor für den Audio-IO.
+\item Das Laden von Bildern vom Fragement Shader aus ist fehlerhaft. Der Grund ist bis dato nicht bekannt(es werden Bilder geladen, jedoch die falschen).
+\item Die Syntax-Hervorhebung wird nur bei Editorstart angepasst.
+\item Das Laden von neuen Designs führt ohne das Schliessen des Einstellungsfensters unter gewissen Umständen zu Darstellungsproblemen bei einigen Widgets.
+\end{enumerate}
+    Hierbei ist zu beachten, dass das dritte Problem nur deshalb besteht, da die Autoren noch keine elegante Lösung gefunden haben, um das Backend mit dem Highlighter
+    kommunizieren zu lassen, da diese über vier Klassenverbindungen miteinander verbunden sind, die alle durchlaufen werden müssten. Diese Redundanz gefällt nicht.
+    Das vierte Problem wiederum könnte ein Qt-internes Problem sein, da es nicht durch \texttt{repaint()} oder \texttt{update()} beeinflusst wird.
 \paragraph{}
     Desweiteren decken die Tests zwar alle \texttt{public}-Schnittstellen des Programms ab, könnten aber sehr viel mehr mit GUI-Elementen interagieren. Hier müssen
     die Autoren sich noch mit dem gegebenen Bezugssystem(in jenem Fall \texttt{QTest}) auseinandersetzen und dies verbessern. Nach Meinung der Autoren gibt es jedoch
