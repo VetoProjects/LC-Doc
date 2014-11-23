@@ -9,3 +9,5 @@ very site we have translated the paper.
 
 The german version is also directly accessible 
 [at Veits' website](https://veitheller.de/static/Dokumentation.pdf).
+
+Also, all doxygen-generated documentation resides in this repository.
